@@ -1,0 +1,48 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Game {
+  id          String   @id @default(cuid())
+  board       Json     // Store the game board state
+  gameState   GameState
+  startTime   DateTime @default(now())
+  endTime     DateTime?
+  duration    Int?     // Duration in seconds
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relation to leaderboard entry if game is won
+  leaderboardEntry LeaderboardEntry?
+
+  @@map("games")
+}
+
+model LeaderboardEntry {
+  id        String   @id @default(cuid())
+  initials  String   @db.VarChar(3)
+  duration  Int      // Duration in seconds
+  gameDate  DateTime
+  createdAt DateTime @default(now())
+
+  // Relation to the game
+  gameId String @unique
+  game   Game   @relation(fields: [gameId], references: [id], onDelete: Cascade)
+
+  @@map("leaderboard_entries")
+  @@index([duration])
+}
+
+enum GameState {
+  PLAYING
+  WON
+  LOST
+}
