@@ -27,3 +27,10 @@ docker-compose up
 ```bash
 docker-compose down
 ```
+
+## AI Tool Usage
+
+This project involved the use of the following LLM-based tools to assist with development:
+
+- **ChatGPT** by OpenAI  
+- **Claude** by Anthropic AI
